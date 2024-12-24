@@ -1,0 +1,60 @@
+:root {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    --background-color: #e0e0e0;
+    --text-color: #000000;
+}
+
+.dark {
+    --background-color: #242424;
+    --text-color: rgba(255, 255, 255, 0.87);
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+
+.toolPickerContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.tools {
+    background-color: #e0e0e0;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    padding: 4px;
+    margin: 8px;
+    border-radius: 8px;
+    transition: transform 0.3s cubic-bezier(0.4, 1.5, 0.5, 1), opacity 0.3s ease-in-out;
+    transform: translateY(-200%) scale(.8);
+    opacity: 0;
+}
+
+.toolPickerContainer:hover .tools {
+    transform: translateY(0%) scale(1);
+    opacity: 1;
+}
+
+.tool {
+    outline: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: transform 0.3s cubic-bezier(0.4, 1.5, 0.5, 1), all 0.3s ease-in-out;
+}
