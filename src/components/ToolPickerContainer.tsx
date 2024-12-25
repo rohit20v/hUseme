@@ -1,6 +1,6 @@
 import {PiHandGrabbingLight, PiRectangleLight} from "react-icons/pi";
 import Tool from "./Tool.tsx";
-import React from "react";
+import React, {useEffect} from "react";
 import {GiCircle} from "react-icons/gi";
 import {RxPencil1} from "react-icons/rx";
 import {BsArrow90DegRight} from "react-icons/bs";
@@ -10,10 +10,13 @@ import {useTheme} from "../hooks/useTheme.ts";
 import {useColorPicker} from "../hooks/useColorPicker.ts";
 import {ColorPickerTool} from "./ColorPickerTool.tsx";
 import {ThemeToggler} from "./ThemeToggler.tsx";
+import {Stage} from "konva/lib/Stage";
 
-const ToolPickerContainer = ({tool, setTool}: {
+const ToolPickerContainer = ({tool, setTool, stageRef, setSelectedColor}: {
     tool: string,
     setTool: React.Dispatch<React.SetStateAction<string>>
+    stageRef: React.RefObject<Stage>
+    setSelectedColor: (color: string) => void
 }) => {
 
     const {selectedColor, isPickerVisible, togglePicker, handleColorChange} = useColorPicker();
@@ -23,12 +26,15 @@ const ToolPickerContainer = ({tool, setTool}: {
         setTheme(theme === 'dark' ? 'light' : 'dark');
     };
 
+    useEffect(() => {
+        setSelectedColor(selectedColor)
+    }, [selectedColor, setSelectedColor]);
 
     return (
         <>
             <div className={"toolPickerContainer"}>
                 <div className={"tools"}>
-                    <SaveTool onClick={() => setTool(TOOLS.SAVE)}/>
+                    <SaveTool onClick={() => setTool(TOOLS.SAVE)} stageRef={stageRef}/>
 
                     <Tool isSelected={tool === TOOLS.SELECT}>
                         <PiHandGrabbingLight
