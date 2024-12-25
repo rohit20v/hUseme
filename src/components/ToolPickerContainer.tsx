@@ -1,58 +1,66 @@
 import {PiHandGrabbingLight, PiRectangleLight} from "react-icons/pi";
 import Tool from "./Tool.tsx";
-import {useContext} from "react";
+import React from "react";
 import {GiCircle} from "react-icons/gi";
 import {RxPencil1} from "react-icons/rx";
-import {BsArrow90DegRight, BsMoonStars, BsSave} from "react-icons/bs";
-import {GoSun} from "react-icons/go";
-import {ThemeContext} from "../context/themeContext.tsx";
+import {BsArrow90DegRight} from "react-icons/bs";
+import {TOOLS} from "../constants.ts";
+import {SaveTool} from "./SaveTool.tsx";
+import {useTheme} from "../hooks/useTheme.ts";
+import {useColorPicker} from "../hooks/useColorPicker.ts";
+import {ColorPickerTool} from "./ColorPickerTool.tsx";
+import {ThemeToggler} from "./ThemeToggler.tsx";
 
-const ToolPickerContainer = () => {
+const ToolPickerContainer = ({tool, setTool}: {
+    tool: string,
+    setTool: React.Dispatch<React.SetStateAction<string>>
+}) => {
 
-    const context = useContext(ThemeContext);
-
-    if (!context) {
-        throw new Error('DarkModeToggle must be used within a ThemeProvider');
-    }
-
-    const {theme, setTheme} = context;
+    const {selectedColor, isPickerVisible, togglePicker, handleColorChange} = useColorPicker();
+    const {theme, setTheme} = useTheme();
 
     const toggleTheme = () => {
         setTheme(theme === 'dark' ? 'light' : 'dark');
     };
 
+
     return (
         <>
             <div className={"toolPickerContainer"}>
                 <div className={"tools"}>
-                    <Tool>
-                        <PiHandGrabbingLight color={"black"} size={24}/>
+                    <SaveTool onClick={() => setTool(TOOLS.SAVE)}/>
+
+                    <Tool isSelected={tool === TOOLS.SELECT}>
+                        <PiHandGrabbingLight
+                            color={"black"} size={24}
+                            onClick={() => setTool(TOOLS.SELECT)}/>
                     </Tool>
-                    <Tool>
-                        <BsArrow90DegRight color={"black"} size={24}/>
+                    <Tool isSelected={tool === TOOLS.ARROW}>
+                        <BsArrow90DegRight
+                            color={"black"} size={20}
+                            onClick={() => setTool(TOOLS.ARROW)}/>
                     </Tool>
-                    <Tool>
-                        <RxPencil1 color={"black"} size={24}/>
+                    <Tool isSelected={tool === TOOLS.PENCIL}>
+                        <RxPencil1
+                            color={"black"} size={24}
+                            onClick={() => setTool(TOOLS.PENCIL)}/>
                     </Tool>
-                    <div onClick={toggleTheme} style={{boxShadow: "0 4px 16px 0 gray", borderRadius: "8px"}}>
-                        <Tool>
-                            {
-                                theme === 'dark' ?
-                                    <GoSun color={"black"} size={24}/>
-                                    :
-                                    <BsMoonStars color={"black"} size={24}/>
-                            }
-                        </Tool>
-                    </div>
-                    <Tool>
-                        <PiRectangleLight color={"black"} size={24}/>
+                    <Tool isSelected={tool === TOOLS.RECT}>
+                        <PiRectangleLight
+                            color={"black"} size={24}
+                            onClick={() => setTool(TOOLS.RECT)}/>
+
                     </Tool>
-                    <Tool>
-                        <GiCircle color={"black"} size={24}/>
+                    <Tool isSelected={tool === TOOLS.CIRCLE}>
+                        <GiCircle
+                            color={"black"} size={22}
+                            onClick={() => setTool(TOOLS.CIRCLE)}/>
                     </Tool>
-                    <Tool>
-                        <BsSave color={"black"} size={24}/>
-                    </Tool>
+
+                    <ColorPickerTool color={selectedColor} isVisible={isPickerVisible} onChange={handleColorChange}
+                                     onToggle={togglePicker}/>
+
+                    <ThemeToggler onClick={toggleTheme} theme={theme}/>
                 </div>
             </div>
         </>
