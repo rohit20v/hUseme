@@ -13,6 +13,7 @@ function App() {
     const [tool, setTool] = useState(TOOLS.SELECT)
     const [rectangles, setRectangles] = useState<rect[]>([])
     const [selectColor, setSelectedColor] = useState<string>()
+    const [strokeWidth, setStrokeWidth] = useState<number>()
 
     const stageRef = useRef<StageType>();
     const isDrawing = useRef<boolean>()
@@ -64,7 +65,7 @@ function App() {
                     height: 20,
                     width: 20,
                     fill: selectColor,
-                    strokeWidth: 2,
+                    strokeWidth: strokeWidth,
                     strokeColor: "black"
                 }])
                 break
@@ -75,7 +76,7 @@ function App() {
         <div className="canvas-container">
             <div className="toolbar-wrapper">
                 <ToolPickerContainer tool={tool} setTool={setTool} stageRef={stageRef}
-                                     setSelectedColor={setSelectedColor}/>
+                                     setSelectedColor={setSelectedColor} setStrokeWidth={setStrokeWidth}/>
             </div>
 
             <Stage

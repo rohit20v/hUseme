@@ -1,6 +1,6 @@
 import {PiHandGrabbingLight, PiRectangleLight} from "react-icons/pi";
 import Tool from "./Tool.tsx";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {GiCircle} from "react-icons/gi";
 import {RxPencil1} from "react-icons/rx";
 import {BsArrow90DegRight} from "react-icons/bs";
@@ -12,15 +12,17 @@ import {ColorPickerTool} from "./ColorPickerTool.tsx";
 import {ThemeToggler} from "./ThemeToggler.tsx";
 import {Stage} from "konva/lib/Stage";
 
-const ToolPickerContainer = ({tool, setTool, stageRef, setSelectedColor}: {
+const ToolPickerContainer = ({tool, setTool, stageRef, setSelectedColor, setStrokeWidth}: {
     tool: string,
     setTool: React.Dispatch<React.SetStateAction<string>>
     stageRef: React.RefObject<Stage>
     setSelectedColor: (color: string) => void
+    setStrokeWidth: (width: number) => void
 }) => {
 
     const {selectedColor, isPickerVisible, togglePicker, handleColorChange} = useColorPicker();
     const {theme, setTheme} = useTheme();
+    const [strokeWidth, setStrokeSize] = useState<number>()
 
     const toggleTheme = () => {
         setTheme(theme === 'dark' ? 'light' : 'dark');
@@ -28,7 +30,8 @@ const ToolPickerContainer = ({tool, setTool, stageRef, setSelectedColor}: {
 
     useEffect(() => {
         setSelectedColor(selectedColor)
-    }, [selectedColor, setSelectedColor]);
+        setStrokeWidth(strokeWidth)
+    }, [selectedColor, setSelectedColor, strokeWidth, setStrokeWidth]);
 
     return (
         <>
@@ -65,6 +68,8 @@ const ToolPickerContainer = ({tool, setTool, stageRef, setSelectedColor}: {
 
                     <ColorPickerTool color={selectedColor} isVisible={isPickerVisible} onChange={handleColorChange}
                                      onToggle={togglePicker}/>
+                    <input type="range" min={0} max={16} value={strokeWidth}
+                           onChange={() => setStrokeSize(Number(event.target.value))}/>
 
                     <ThemeToggler onClick={toggleTheme} theme={theme}/>
                 </div>
