@@ -6,4 +6,5 @@ export const TOOLS = {
     SAVE: "SAVE",
     PENCIL: "PENCIL",
     PAINT: "PAINT",
+    TRIANGLE: "TRIANGLE",
 }

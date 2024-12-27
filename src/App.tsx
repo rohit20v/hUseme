@@ -1,17 +1,19 @@
 import './App.css'
 import ToolPickerContainer from "./components/ToolPickerContainer.tsx";
 import {useRef, useState} from "react";
-import {Layer, Stage} from 'react-konva';
+import {Circle, Layer, Stage} from 'react-konva';
 import {Stage as StageType} from "konva/lib/Stage";
 import {TOOLS} from "./constants.ts";
 import {Rect} from "react-konva/lib/ReactKonvaCore";
 import {v4 as uuid} from "uuid";
-import {rect} from "./utils/types.ts";
+import {shape} from "./utils/types.ts";
 
 
 function App() {
     const [tool, setTool] = useState(TOOLS.SELECT)
-    const [rectangles, setRectangles] = useState<rect[]>([])
+
+    const [shapes, setShapes] = useState<shape[]>([])
+
     const [selectColor, setSelectedColor] = useState<string>()
     const [strokeWidth, setStrokeWidth] = useState<number>()
 
@@ -19,28 +21,32 @@ function App() {
     const isDrawing = useRef<boolean>()
     const shapeId = useRef<string>()
 
+
     const handleOnPointerMove = () => {
         if (tool === TOOLS.SELECT || !isDrawing.current) return;
 
         const stage = stageRef.current;
         const {x, y} = stage.getPointerPosition();
 
+        setShapes(shapes.map((currentShape) => {
+            if (currentShape.id === shapeId.current) {
+                if (currentShape.type === "rect") {
+                    return {
+                        ...currentShape,
+                        width: x - currentShape.x,
+                        height: y - currentShape.y,
+                    }
+                }
+                if (currentShape.type === "circle") {
+                    return {
+                        ...currentShape,
+                        radius: ((y - currentShape.y) ** 2 + (x - currentShape.x) ** 2) ** .5
+                    }
+                }
+            }
+            return currentShape
+        }))
 
-        switch (tool) {
-            case TOOLS.RECT:
-                setRectangles((rectangles.map(rectangle => {
-                        if (rectangle.id === shapeId.current) {
-                            return {
-                                ...rectangle,
-                                width: x - rectangle.x,
-                                height: y - rectangle.y,
-                            }
-                        }
-                        return rectangle
-                    }))
-                );
-                break
-        }
     };
     const handleOnPointerUp = () => {
         isDrawing.current = false;
@@ -56,20 +62,18 @@ function App() {
         shapeId.current = id;
         isDrawing.current = true;
 
-        switch (tool) {
-            case TOOLS.RECT:
-                setRectangles(() => [...rectangles, {
-                    id,
-                    x,
-                    y,
-                    height: 20,
-                    width: 20,
-                    fill: selectColor,
-                    strokeWidth: strokeWidth,
-                    strokeColor: "black"
-                }])
-                break
-        }
+        const newShape: shape = {
+            id,
+            x,
+            y,
+            fill: selectColor,
+            strokeWidth: strokeWidth,
+            stroke: "black",
+            type: tool === TOOLS.RECT ? 'rect' : 'circle',
+            ...(tool === TOOLS.RECT ? {width: 0, height: 0} : {radius: 0})
+        };
+
+        setShapes(() => [...shapes, newShape]);
 
     };
     return (
@@ -88,18 +92,25 @@ function App() {
                 onPointerUp={handleOnPointerUp}
             >
                 <Layer>
-                    {rectangles.map((rectangle) =>
-                        <Rect
-                            id={rectangle.id}
-                            x={rectangle.x}
-                            y={rectangle.y}
-                            width={rectangle.width}
-                            height={rectangle.height}
-                            fill={rectangle.fill}
-                            stroke={rectangle.strokeColor}
-                            strokeWidth={rectangle.strokeWidth}
-                        />
-                    )}
+                    {shapes.map((shape) => {
+                        switch (shape.type) {
+                            case 'rect':
+                                return (
+                                    <Rect
+                                        key={shape.id}
+                                        {...shape}
+                                    />
+                                );
+                            case 'circle':
+                                return (
+                                    <Circle
+                                        key={shape.id}
+                                        {...shape}
+                                    />
+                                );
+                        }
+                    })}
+
                 </Layer>
             </Stage>
         </div>

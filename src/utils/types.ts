@@ -6,7 +6,7 @@ export type shape = {
     width?: number;
     fill: string
     strokeWidth: number;
-    strokeColor: "black";
+    stroke: string;
     sides?: number;
     radius?: number;
     type?: string;
