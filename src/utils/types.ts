@@ -1,43 +1,35 @@
-export type shape = {
+export interface shape {
     id: string;
     x?: number;
     y?: number;
-    height?: number;
-    width?: number;
     fill: string
     strokeWidth: number;
     stroke: string;
-    sides?: number;
-    radius?: number;
-    type?: string;
+    type: string;
 }
-//
-// type ShapeType = 'rect' | 'circle' | 'arrow' | 'line' | 'text'; // add any shape types
-//
-// export type BaseShape = {
-//     id: string;
-//     x: number;
-//     y: number;
-//     fill: string;
-//     strokeWidth: number;
-//     strokeColor: string;
-//     type: ShapeType;
-// }
-//
-// export type RectShape = BaseShape & {
-//     type: 'rect';
-//     width: number;
-//     height: number;
-// }
-//
-// export type CircleShape = BaseShape & {
-//     type: 'circle';
-//     radius: number;
-// }
-//
-// export type ArrowShape = BaseShape & {
-//     type: 'arrow';
-//     points: number[];
-// }
-//
-// export type Shape = RectShape | CircleShape | ArrowShape;
+
+
+export interface Rectangle extends shape {
+    type: 'rect';
+    width: number;
+    height: number;
+}
+
+export interface Circle extends shape {
+    type: 'circle';
+    radius: number;
+}
+
+export interface Triangle extends shape {
+    type: 'triangle';
+    radius: number;
+    sides: number;
+}
+
+export interface Arrow extends shape {
+    type: 'arrow';
+    a: number;
+    b: number;
+}
+
+export type Shapes = Rectangle | Circle | Triangle | Arrow;
