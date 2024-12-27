@@ -2,7 +2,7 @@ const Tool = ({children, isSelected}) => {
 
     return (
         <div
-            style={isSelected ? {backgroundColor: "lightskyblue"} : {}}
+            style={isSelected ? {backgroundColor: "lightskyblue", padding: "4px"} : {}}
             role="button"
             tabIndex={0}
             className={"tool"}
