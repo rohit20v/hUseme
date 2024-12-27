@@ -1,7 +1,7 @@
 import './App.css'
 import ToolPickerContainer from "./components/ToolPickerContainer.tsx";
 import {useRef, useState} from "react";
-import {Circle, Layer, RegularPolygon, Stage} from 'react-konva';
+import {Arrow, Circle, Layer, RegularPolygon, Stage} from 'react-konva';
 import {Stage as StageType} from "konva/lib/Stage";
 import {TOOLS} from "./constants.ts";
 import {Rect} from "react-konva/lib/ReactKonvaCore";
@@ -47,6 +47,11 @@ function App() {
                         ...currentShape,
                         radius: ((y - currentShape.y) ** 2 + (x - currentShape.x) ** 2) ** .5
                     }
+                } else if (currentShape.type === "arrow") {
+                    return {
+                        ...currentShape,
+                        points: [currentShape.points[0], currentShape.points[1], x, y],
+                    }
                 }
             }
             return currentShape
@@ -69,7 +74,7 @@ function App() {
         shapeId.current = id;
         isDrawing.current = true;
 
-        const newShape: Shapes = createShape(tool, id, x, y, selectColor, strokeWidth);
+        const newShape: Shapes = createShape(tool, id, x, y, selectColor, strokeWidth, [x, y, x, y]);
 
         setShapes(() => [...shapes, newShape]);
 
@@ -111,6 +116,13 @@ function App() {
                                     <RegularPolygon
                                         key={shape.id}
                                         sides={shape.sides} radius={shape.radius}
+                                        {...shape}
+                                    />
+                                )
+                            case 'arrow':
+                                return (
+                                    <Arrow
+                                        key={shape.id}
                                         {...shape}
                                     />
                                 )

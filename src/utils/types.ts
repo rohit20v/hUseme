@@ -28,8 +28,7 @@ export interface Triangle extends shape {
 
 export interface Arrow extends shape {
     type: 'arrow';
-    a: number;
-    b: number;
+    points: number[]
 }
 
 export type Shapes = Rectangle | Circle | Triangle | Arrow;
