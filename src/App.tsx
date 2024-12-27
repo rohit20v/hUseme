@@ -1,18 +1,19 @@
 import './App.css'
 import ToolPickerContainer from "./components/ToolPickerContainer.tsx";
 import {useRef, useState} from "react";
-import {Circle, Layer, Stage} from 'react-konva';
+import {Circle, Layer, RegularPolygon, Stage} from 'react-konva';
 import {Stage as StageType} from "konva/lib/Stage";
 import {TOOLS} from "./constants.ts";
 import {Rect} from "react-konva/lib/ReactKonvaCore";
 import {v4 as uuid} from "uuid";
-import {shape} from "./utils/types.ts";
+import {Shapes} from "./utils/types.ts";
+import {createShape} from "./utils/createShape.ts";
 
 
 function App() {
     const [tool, setTool] = useState(TOOLS.SELECT)
 
-    const [shapes, setShapes] = useState<shape[]>([])
+    const [shapes, setShapes] = useState<Shapes[]>([])
 
     const [selectColor, setSelectedColor] = useState<string>()
     const [strokeWidth, setStrokeWidth] = useState<number>()
@@ -36,8 +37,12 @@ function App() {
                         width: x - currentShape.x,
                         height: y - currentShape.y,
                     }
-                }
-                if (currentShape.type === "circle") {
+                } else if (currentShape.type === "circle") {
+                    return {
+                        ...currentShape,
+                        radius: ((y - currentShape.y) ** 2 + (x - currentShape.x) ** 2) ** .5
+                    }
+                } else if (currentShape.type === "triangle") {
                     return {
                         ...currentShape,
                         radius: ((y - currentShape.y) ** 2 + (x - currentShape.x) ** 2) ** .5
@@ -48,9 +53,11 @@ function App() {
         }))
 
     };
+
     const handleOnPointerUp = () => {
         isDrawing.current = false;
     };
+
     const handleOnPointerDown = () => {
         if (tool === TOOLS.SELECT) return;
 
@@ -62,16 +69,7 @@ function App() {
         shapeId.current = id;
         isDrawing.current = true;
 
-        const newShape: shape = {
-            id,
-            x,
-            y,
-            fill: selectColor,
-            strokeWidth: strokeWidth,
-            stroke: "black",
-            type: tool === TOOLS.RECT ? 'rect' : 'circle',
-            ...(tool === TOOLS.RECT ? {width: 0, height: 0} : {radius: 0})
-        };
+        const newShape: Shapes = createShape(tool, id, x, y, selectColor, strokeWidth);
 
         setShapes(() => [...shapes, newShape]);
 
@@ -108,9 +106,16 @@ function App() {
                                         {...shape}
                                     />
                                 );
+                            case 'triangle':
+                                return (
+                                    <RegularPolygon
+                                        key={shape.id}
+                                        sides={shape.sides} radius={shape.radius}
+                                        {...shape}
+                                    />
+                                )
                         }
                     })}
-
                 </Layer>
             </Stage>
         </div>
