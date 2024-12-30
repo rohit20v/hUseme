@@ -22,7 +22,7 @@ const ToolPickerContainer = ({tool, setTool, stageRef, setSelectedColor, setStro
 
     const {selectedColor, isPickerVisible, togglePicker, handleColorChange} = useColorPicker();
     const {theme, setTheme} = useTheme();
-    const [strokeSize, setStrokeSize] = useState<number>(5)
+    const [strokeSize, setStrokeSize] = useState<number>(2)
 
     const toggleTheme = () => {
         setTheme(theme === 'dark' ? 'light' : 'dark');

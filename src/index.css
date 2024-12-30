@@ -10,7 +10,7 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    --background-color: #e0e0e0;
+    --background-color: #f6f6f6;
     --text-color: #000000;
 }
 
@@ -20,6 +20,7 @@
 }
 
 body {
+    margin: 0;
     overflow: hidden;
     background-color: var(--background-color);
     color: var(--text-color);
