@@ -9,6 +9,8 @@ export const createShape = (tool: string, id: string, x: number, y: number, sele
             return {id, x, y, fill: selectColor, strokeWidth, stroke: "black", type: 'circle', radius: 0};
         case TOOLS.ARROW:
             return {id, points, fill: selectColor, strokeWidth, stroke: "black", type: 'arrow'};
+        case TOOLS.PENCIL:
+            return {id, points, fill: selectColor, strokeWidth, stroke: selectColor, type: 'pencil'};
         case TOOLS.TRIANGLE:
             return {
                 id,

@@ -31,4 +31,9 @@ export interface Arrow extends shape {
     points: number[]
 }
 
-export type Shapes = Rectangle | Circle | Triangle | Arrow;
+export interface Pencil extends shape {
+    type: 'pencil';
+    points: number[]
+}
+
+export type Shapes = Rectangle | Circle | Triangle | Arrow | Pencil;

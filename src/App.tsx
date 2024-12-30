@@ -1,7 +1,7 @@
 import './App.css'
 import ToolPickerContainer from "./components/ToolPickerContainer.tsx";
 import {useRef, useState} from "react";
-import {Arrow, Circle, Layer, RegularPolygon, Stage} from 'react-konva';
+import {Arrow, Circle, Layer, Line, RegularPolygon, Stage} from 'react-konva';
 import {Stage as StageType} from "konva/lib/Stage";
 import {TOOLS} from "./constants.ts";
 import {Rect} from "react-konva/lib/ReactKonvaCore";
@@ -31,27 +31,33 @@ function App() {
 
         setShapes(shapes.map((currentShape) => {
             if (currentShape.id === shapeId.current) {
-                if (currentShape.type === "rect") {
-                    return {
-                        ...currentShape,
-                        width: x - currentShape.x,
-                        height: y - currentShape.y,
-                    }
-                } else if (currentShape.type === "circle") {
-                    return {
-                        ...currentShape,
-                        radius: ((y - currentShape.y) ** 2 + (x - currentShape.x) ** 2) ** .5
-                    }
-                } else if (currentShape.type === "triangle") {
-                    return {
-                        ...currentShape,
-                        radius: ((y - currentShape.y) ** 2 + (x - currentShape.x) ** 2) ** .5
-                    }
-                } else if (currentShape.type === "arrow") {
-                    return {
-                        ...currentShape,
-                        points: [currentShape.points[0], currentShape.points[1], x, y],
-                    }
+                switch (currentShape.type) {
+                    case "rect":
+                        return {
+                            ...currentShape,
+                            width: x - currentShape.x,
+                            height: y - currentShape.y,
+                        }
+                    case "circle":
+                        return {
+                            ...currentShape,
+                            radius: ((y - currentShape.y) ** 2 + (x - currentShape.x) ** 2) ** .5
+                        }
+                    case "triangle":
+                        return {
+                            ...currentShape,
+                            radius: ((y - currentShape.y) ** 2 + (x - currentShape.x) ** 2) ** .5
+                        }
+                    case "arrow":
+                        return {
+                            ...currentShape,
+                            points: [currentShape.points[0], currentShape.points[1], x, y],
+                        }
+                    case "pencil":
+                        return {
+                            ...currentShape,
+                            points: [...currentShape.points, x, y],
+                        }
                 }
             }
             return currentShape
@@ -123,6 +129,15 @@ function App() {
                                 return (
                                     <Arrow
                                         key={shape.id}
+                                        {...shape}
+                                    />
+                                )
+                            case 'pencil':
+                                return (
+                                    <Line
+                                        key={shape.id}
+                                        lineCap={"round"}
+                                        lineJoin={"round"}
                                         {...shape}
                                     />
                                 )
