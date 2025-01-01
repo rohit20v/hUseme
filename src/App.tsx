@@ -1,6 +1,6 @@
 import './App.css'
 import ToolPickerContainer from "./components/ToolPickerContainer.tsx";
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {Arrow, Circle, Layer, Line, RegularPolygon, Stage, Transformer} from 'react-konva';
 import {Stage as StageType} from "konva/lib/Stage";
 import {TOOLS} from "./constants.ts";
@@ -11,6 +11,7 @@ import {createShape} from "./utils/createShape.ts";
 import Konva from "konva";
 import {KonvaEventObject} from "konva/lib/Node";
 import {useScreenZoom} from "./hooks/useScreenZoom.ts";
+import {Bounce, toast, ToastContainer} from "react-toastify";
 
 
 function App() {
@@ -31,14 +32,7 @@ function App() {
 
     const {handleWheel} = useScreenZoom({stageRef, scale, setScale, position, setPosition})
 
-    const handleOnPointerMove = () => {
-        if (tool === TOOLS.SELECT || !isDrawing.current) return;
-
-        const stage = stageRef.current;
-        const pointerPos = stage.getPointerPosition();
-        const x = (pointerPos.x - position.x) / scale
-        const y = (pointerPos.y - position.y) / scale
-
+    const handleShapeCreation = (x: number, y: number) => {
         setShapes(shapes.map((currentShape) => {
             if (currentShape.id === shapeId.current) {
                 switch (currentShape.type) {
@@ -72,6 +66,17 @@ function App() {
             }
             return currentShape
         }))
+    };
+
+    const handleOnPointerMove = () => {
+        if (tool === TOOLS.SELECT || !isDrawing.current) return;
+
+        const stage = stageRef.current;
+        const pointerPos = stage.getPointerPosition();
+        const x = (pointerPos.x - position.x) / scale
+        const y = (pointerPos.y - position.y) / scale
+
+        handleShapeCreation(x, y);
 
     };
 
@@ -122,6 +127,37 @@ function App() {
             };
         }
     };
+
+    const listenUndoKeys = (e: KeyboardEvent) => {
+        if (e.ctrlKey && e.key === 'z') {
+            if (shapes.length > 0)
+                setShapes((prevShapes) => prevShapes.slice(0, prevShapes.length - 1));
+            else {
+                console.log(shapes.length)
+                console.log("No shapes found.");
+                toast('😺 Nothing to remove', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: false,
+                    pauseOnHover: false,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Bounce,
+                });
+            }
+
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener('keydown', listenUndoKeys);
+
+        return () => {
+            window.removeEventListener('keydown', listenUndoKeys);
+        };
+    }, [listenUndoKeys]);
 
 
     const handleStageClick = () => {
@@ -215,6 +251,8 @@ function App() {
                     <Transformer ref={transformerRef}/>
                 </Layer>
             </Stage>
+            <ToastContainer />
+
         </div>
     )
 }
