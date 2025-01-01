@@ -124,6 +124,18 @@ function App() {
     };
 
 
+    const handleStageClick = () => {
+        const stage = stageRef.current;
+        const pointerPos = stage.getPointerPosition();
+
+        // Check if the click is inside any shape
+        const clickedOnShape = stage.getIntersection(pointerPos);
+
+        if (!clickedOnShape) {
+            transformerRef.current.nodes([]);
+        }
+    };
+
     return (
         <div className="canvas-container">
             <div className="toolbar-wrapper">
@@ -144,17 +156,9 @@ function App() {
                 scaleY={scale}
                 x={position.x}
                 y={position.y}
-                draggable={tool === TOOLS.SELECT}
+                onClick={handleStageClick}
             >
                 <Layer>
-                    <Rect
-                        x={-100000}
-                        y={-100000}
-                        width={200000}
-                        height={200000}
-                        id={"background"}
-                        onClick={() => transformerRef.current.nodes([])}
-                    />
                     {shapes.map((shape) => {
                         switch (shape.type) {
                             case 'rect':
