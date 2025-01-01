@@ -9,21 +9,23 @@ import {SaveTool} from "./SaveTool.tsx";
 import {useTheme} from "../hooks/useTheme.ts";
 import {useColorPicker} from "../hooks/useColorPicker.ts";
 import {ColorPickerTool} from "./ColorPickerTool.tsx";
-import {ThemeToggler} from "./ThemeToggler.tsx";
 import {Stage} from "konva/lib/Stage";
+import {RiDeleteBin2Fill} from "react-icons/ri";
 
-const ToolPickerContainer = ({tool, setTool, stageRef, setSelectedColor, setStrokeWidth}: {
+const ToolPickerContainer = ({tool, setTool, stageRef, setSelectedColor, setStrokeWidth, setShapes}: {
     tool: string,
     setTool: React.Dispatch<React.SetStateAction<string>>
     stageRef: React.RefObject<Stage>
     setSelectedColor: (color: string) => void
-    setStrokeWidth: (width: number) => void
+    setStrokeWidth: (width: number) => void,
+    setShapes: () => void
 }) => {
 
     const {selectedColor, isPickerVisible, togglePicker, handleColorChange} = useColorPicker();
     const {theme, setTheme} = useTheme();
     const [strokeSize, setStrokeSize] = useState<number>(2)
 
+    // todo fix theme toggling
     const toggleTheme = () => {
         setTheme(theme === 'dark' ? 'light' : 'dark');
     };
@@ -76,7 +78,16 @@ const ToolPickerContainer = ({tool, setTool, stageRef, setSelectedColor, setStro
                     <input type="range" min={0} max={16} value={strokeSize}
                            onChange={(event) => setStrokeSize(Number(event.target.value))}/>
 
-                    <ThemeToggler onClick={toggleTheme} theme={theme}/>
+                    {/*<ThemeToggler onClick={toggleTheme} theme={theme}/>*/}
+                    <div
+                        style={{
+                            boxShadow: "0 4px 16px 0 gray",
+                            borderRadius: "8px"
+                        }}>
+                        <Tool isSelected={false}>
+                            <RiDeleteBin2Fill size={22} onClick={setShapes}/>
+                        </Tool>
+                    </div>
                 </div>
             </div>
         </>

@@ -121,7 +121,8 @@ function App() {
         <div className="canvas-container">
             <div className="toolbar-wrapper">
                 <ToolPickerContainer tool={tool} setTool={setTool} stageRef={stageRef}
-                                     setSelectedColor={setSelectedColor} setStrokeWidth={setStrokeWidth}/>
+                                     setSelectedColor={setSelectedColor} setStrokeWidth={setStrokeWidth}
+                                     setShapes={() => setShapes(() => [])}/>
             </div>
 
             <Stage
