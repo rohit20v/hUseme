@@ -84,7 +84,7 @@ const ToolPickerContainer = ({tool, setTool, stageRef, setSelectedColor, setStro
                             borderRadius: "8px"
                         }}>
                         <Tool isSelected={false}>
-                            <RiDeleteBin2Fill size={22} onClick={setShapes}/>
+                            <RiDeleteBin2Fill color={"black"} size={22} onClick={setShapes}/>
                         </Tool>
                     </div>
                 </div>
