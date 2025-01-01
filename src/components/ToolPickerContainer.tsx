@@ -6,7 +6,6 @@ import {RxPencil1} from "react-icons/rx";
 import {BsArrow90DegRight} from "react-icons/bs";
 import {TOOLS} from "../constants.ts";
 import {SaveTool} from "./SaveTool.tsx";
-import {useTheme} from "../hooks/useTheme.ts";
 import {useColorPicker} from "../hooks/useColorPicker.ts";
 import {ColorPickerTool} from "./ColorPickerTool.tsx";
 import {Stage} from "konva/lib/Stage";
@@ -22,13 +21,13 @@ const ToolPickerContainer = ({tool, setTool, stageRef, setSelectedColor, setStro
 }) => {
 
     const {selectedColor, isPickerVisible, togglePicker, handleColorChange} = useColorPicker();
-    const {theme, setTheme} = useTheme();
+    // const {theme, setTheme} = useTheme();
     const [strokeSize, setStrokeSize] = useState<number>(2)
 
     // todo fix theme toggling
-    const toggleTheme = () => {
-        setTheme(theme === 'dark' ? 'light' : 'dark');
-    };
+    // const toggleTheme = () => {
+    //     setTheme(theme === 'dark' ? 'light' : 'dark');
+    // };
 
     useEffect(() => {
         setSelectedColor(selectedColor)
