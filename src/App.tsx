@@ -10,28 +10,34 @@ import {Shapes} from "./utils/types.ts";
 import {createShape} from "./utils/createShape.ts";
 import Konva from "konva";
 import {KonvaEventObject} from "konva/lib/Node";
+import {useScreenZoom} from "./hooks/useScreenZoom.ts";
 
 
 function App() {
     const [tool, setTool] = useState(TOOLS.PENCIL)
-
     const [shapes, setShapes] = useState<Shapes[]>([])
-
     const [selectColor, setSelectedColor] = useState<string>()
     const [strokeWidth, setStrokeWidth] = useState<number>()
+    const [scale, setScale] = useState(1)
+    const [position, setPosition] = useState<{ x: number, y: number }>({x: 0, y: 0})
 
     const stageRef = useRef<StageType>();
     const isDrawing = useRef<boolean>()
     const transformerRef = useRef<Konva.Transformer>();
     const shapeId = useRef<string>()
 
+
     const isDraggable = tool === TOOLS.SELECT
+
+    const {handleWheel} = useScreenZoom({stageRef, scale, setScale, position, setPosition})
 
     const handleOnPointerMove = () => {
         if (tool === TOOLS.SELECT || !isDrawing.current) return;
 
         const stage = stageRef.current;
-        const {x, y} = stage.getPointerPosition();
+        const pointerPos = stage.getPointerPosition();
+        const x = (pointerPos.x - position.x) / scale
+        const y = (pointerPos.y - position.y) / scale
 
         setShapes(shapes.map((currentShape) => {
             if (currentShape.id === shapeId.current) {
@@ -77,8 +83,9 @@ function App() {
         if (tool === TOOLS.SELECT) return;
 
         const stage = stageRef.current;
-        const {x, y} = stage.getPointerPosition();
-
+        const pointerPos = stage.getPointerPosition();
+        const x = (pointerPos.x - position.x) / scale
+        const y = (pointerPos.y - position.y) / scale
         const id = uuid()
 
         shapeId.current = id;
@@ -132,14 +139,19 @@ function App() {
                 onPointerDown={handleOnPointerDown}
                 onPointerMove={handleOnPointerMove}
                 onPointerUp={handleOnPointerUp}
+                onWheel={handleWheel}
+                scaleX={scale}
+                scaleY={scale}
+                x={position.x}
+                y={position.y}
+                draggable={tool === TOOLS.SELECT}
             >
                 <Layer>
                     <Rect
-                        x={0}
-                        y={0}
-                        width={window.innerWidth}
-                        height={window.innerHeight}
-                        fill={"white"}
+                        x={-100000}
+                        y={-100000}
+                        width={200000}
+                        height={200000}
                         id={"background"}
                         onClick={() => transformerRef.current.nodes([])}
                     />

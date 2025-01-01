@@ -74,7 +74,7 @@ const ToolPickerContainer = ({tool, setTool, stageRef, setSelectedColor, setStro
 
                     <ColorPickerTool color={selectedColor} isVisible={isPickerVisible} onChange={handleColorChange}
                                      onToggle={togglePicker}/>
-                    <input type="range" min={0} max={16} value={strokeSize}
+                    <input type="range" min={0} max={24} value={strokeSize}
                            onChange={(event) => setStrokeSize(Number(event.target.value))}/>
 
                     {/*<ThemeToggler onClick={toggleTheme} theme={theme}/>*/}
