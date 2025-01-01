@@ -1,6 +1,6 @@
 import './App.css'
 import ToolPickerContainer from "./components/ToolPickerContainer.tsx";
-import {useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {Arrow, Circle, Layer, Line, RegularPolygon, Stage, Transformer} from 'react-konva';
 import {Stage as StageType} from "konva/lib/Stage";
 import {TOOLS} from "./constants.ts";
@@ -128,12 +128,12 @@ function App() {
         }
     };
 
-    const listenUndoKeys = (e: KeyboardEvent) => {
+    const listenUndoKeys = useCallback((e: KeyboardEvent) => {
         if (e.ctrlKey && e.key === 'z') {
-            if (shapes.length > 0)
+            if (shapes.length > 0) {
                 setShapes((prevShapes) => prevShapes.slice(0, prevShapes.length - 1));
-            else {
-                console.log(shapes.length)
+            } else {
+                console.log(shapes.length);
                 console.log("No shapes found.");
                 toast('😺 Nothing to remove', {
                     position: "top-right",
@@ -147,9 +147,8 @@ function App() {
                     transition: Bounce,
                 });
             }
-
         }
-    };
+    }, [shapes, setShapes]);
 
     useEffect(() => {
         window.addEventListener('keydown', listenUndoKeys);
