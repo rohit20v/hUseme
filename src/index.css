@@ -78,12 +78,10 @@ body {
 .intro-text {
     position: absolute;
     z-index: -10;
-    top: 50%;
-    font-size: 4vh;
-    left: 50%;
-    transform: translate(-50%, -50%);
     text-align: center;
+    width: 100%;
     color: white;
+    top: 4%;
     cursor: pointer;
     letter-spacing: 6px;
     font-family: sansilk, cursive;

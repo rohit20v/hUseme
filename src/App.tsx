@@ -231,7 +231,9 @@ function App() {
         <div className="canvas-container">
             <div className="toolbar-wrapper">
                 {showIntroText &&
-                    <h1 className="intro-text" onMouseEnter={handleHover}>Hover me</h1>
+                    <div className="intro-text">
+                        <h1 onMouseEnter={handleHover}>Hover me</h1>
+                    </div>
                 }
 
                 <ToolPickerContainer tool={tool} setTool={setTool} stageRef={stageRef}
