@@ -15,6 +15,7 @@ import {Bounce, toast, ToastContainer} from "react-toastify";
 
 
 function App() {
+    const [showIntroText, setShowIntroText] = useState(true);
     const [tool, setTool] = useState(TOOLS.PENCIL)
 
     const [shapes, setShapes] = useState<Shapes[]>(() => {
@@ -210,8 +211,9 @@ function App() {
         };
     }, [shapes, listenUndoKeys]);
 
-
-
+    const handleHover = () => {
+        setShowIntroText(false);
+    };
 
     const handleStageClick = () => {
         const stage = stageRef.current;
@@ -228,6 +230,10 @@ function App() {
     return (
         <div className="canvas-container">
             <div className="toolbar-wrapper">
+                {showIntroText &&
+                    <h1 className="intro-text" onMouseEnter={handleHover}>Hover me</h1>
+                }
+
                 <ToolPickerContainer tool={tool} setTool={setTool} stageRef={stageRef}
                                      setSelectedColor={setSelectedColor} setStrokeWidth={setStrokeWidth}
                                      setShapes={() => {

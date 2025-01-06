@@ -12,7 +12,18 @@
     -moz-osx-font-smoothing: grayscale;
     --background-color: #f6f6f6;
     --text-color: #000000;
+    --lights: rgb(255, 115, 27);
 }
+
+@font-face {
+    font-family: sansilk;
+    src: url('/public/fonts/sansilk.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+
+    /*src: url(https://dl.dropbox.com/s/df4zz9y6lmhocr9/England.otf?dl=0)*/
+}
+
 
 .dark {
     --background-color: #242424;
@@ -43,7 +54,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 69px;
-    padding-top: 8px;
+    z-index: 3;
 }
 
 
@@ -64,6 +75,64 @@ body {
     top: 0;
 }
 
+.intro-text {
+    position: absolute;
+    z-index: -10;
+    top: 50%;
+    font-size: 4vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    cursor: pointer;
+    letter-spacing: 6px;
+    font-family: sansilk, cursive;
+    text-shadow: 0 0 .5vh var(--lights), 0 0 .5vh var(--lights),
+    0 0 .5vh var(--lights), 0 0 .5vh var(--lights),
+    0 0 1vh var(--lights);
+    animation: flicker 5s infinite;
+    filter: brightness(1);
+}
+
+@keyframes flicker {
+    9% {
+        text-shadow: 0 0 .5vh var(--lights), 0 0 .5vh var(--lights), 0 0 .5vh var(--lights), 0 0 .5vh var(--lights), 0 0 1vh var(--lights);;
+        filter: brightness(1)
+    }
+    10% {
+        text-shadow: none;
+        filter: brightness(.4);
+    }
+    11% {
+        text-shadow: 0 0 .5vh var(--lights), 0 0 .5vh var(--lights), 0 0 .5vh var(--lights), 0 0 .5vh var(--lights), 0 0 1vh var(--lights);;
+        filter: brightness(1)
+    }
+    12% {
+        text-shadow: none;
+        filter: brightness(.4);
+    }
+    13% {
+        text-shadow: 0 0 .5vh var(--lights), 0 0 .5vh var(--lights), 0 0 .5vh var(--lights), 0 0 .5vh var(--lights), 0 0 1vh var(--lights);;
+        filter: brightness(1)
+    }
+    66% {
+        text-shadow: 0 0 .5vh var(--lights), 0 0 .5vh var(--lights), 0 0 .5vh var(--lights), 0 0 .5vh var(--lights), 0 0 1vh var(--lights);;
+        filter: brightness(1)
+    }
+    67% {
+        text-shadow: none;
+        filter: brightness(.4);
+    }
+    75% {
+        text-shadow: none;
+        filter: brightness(.4);
+    }
+    76% {
+        text-shadow: 0 0 .5vh var(--lights), 0 0 .5vh var(--lights), 0 0 .5vh var(--lights), 0 0 .5vh var(--lights), 0 0 1vh var(--lights);;
+        filter: brightness(1)
+    }
+}
+
 .toolPickerContainer:hover .tools {
     transform: translateY(0%) scale(1);
     opacity: 1;
@@ -77,8 +146,9 @@ body {
     border-radius: 8px;
     transition: transform 0.3s cubic-bezier(0.4, 1.5, 0.5, 1), all 0.3s ease-in-out;
 }
-@media (max-width : 642px) {
-    .tools{
+
+@media (max-width: 642px) {
+    .tools {
         gap: 4px;
         width: 69%;
         flex-wrap: wrap;
