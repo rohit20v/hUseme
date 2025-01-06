@@ -6,13 +6,13 @@ export interface shape {
     strokeWidth: number;
     stroke: string;
     type: string;
+    width?: number;
+    height?: number;
 }
 
 
 export interface Rectangle extends shape {
     type: 'rect';
-    width: number;
-    height: number;
 }
 
 export interface Circle extends shape {

@@ -16,7 +16,12 @@ import {Bounce, toast, ToastContainer} from "react-toastify";
 
 function App() {
     const [tool, setTool] = useState(TOOLS.PENCIL)
-    const [shapes, setShapes] = useState<Shapes[]>([])
+
+    const [shapes, setShapes] = useState<Shapes[]>(() => {
+        const savedShapes = localStorage.getItem('shapes');
+        return savedShapes ? JSON.parse(savedShapes) : [];
+    });
+
     const [selectColor, setSelectedColor] = useState<string>()
     const [strokeWidth, setStrokeWidth] = useState<number>()
     const [scale, setScale] = useState(1)
@@ -103,11 +108,12 @@ function App() {
     };
 
     const removeSelectedShape = (event: KeyboardEvent) => {
-        if (event.key === 'Escape' || event.key === 'Delete') {
+        if (event.key === 'Delete') {
             if (transformerRef.current && transformerRef.current.getNode()) {
                 const selectedShapeId = transformerRef.current.getNode().id();
                 setShapes((prevShapes) => prevShapes.filter(shape => shape.id !== selectedShapeId));
                 transformerRef.current.nodes([])
+                localStorage.setItem('shapes', JSON.stringify(shapes));
             }
         }
     };
@@ -127,6 +133,51 @@ function App() {
             };
         }
     };
+
+    const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
+        if (tool !== TOOLS.SELECT) return;
+
+        const target = e.currentTarget;
+        transformerRef.current.nodes([target]);
+
+        const selectedNode = transformerRef.current.getNode();
+
+        const {x, y} = e.target.position();
+        setShapes((v) =>
+            v.map((shape) =>
+                shape.id === selectedNode.id() ? {...shape, x, y} : shape
+            )
+        );
+    };
+
+    const handleTransformEnd = (id: string, e: Konva.KonvaEventObject<Event>) => {
+        const node = e.target;
+
+        const updatedShape = {
+            id,
+            x: node.x(),
+            y: node.y(),
+            scaleX: node.scaleX(),
+            scaleY: node.scaleY(),
+            rotation: node.rotation(),
+            ...shapes.find((shape) => shape.id === id),
+        };
+
+        if (updatedShape.type === "rect" || updatedShape.type === "circle") {
+            updatedShape.width = node.width() * node.scaleX();
+            updatedShape.height = node.height() * node.scaleY();
+        }
+
+        setShapes((v) =>
+            v.map((shape) =>
+                shape.id === id ? {...shape, ...updatedShape} : shape
+            )
+        );
+
+        node.scaleX(1);
+        node.scaleY(1);
+    };
+
 
     const listenUndoKeys = useCallback((e: KeyboardEvent) => {
         if (e.ctrlKey && e.key === 'z') {
@@ -152,11 +203,14 @@ function App() {
 
     useEffect(() => {
         window.addEventListener('keydown', listenUndoKeys);
+        localStorage.setItem('shapes', JSON.stringify(shapes));
 
         return () => {
             window.removeEventListener('keydown', listenUndoKeys);
         };
-    }, [listenUndoKeys]);
+    }, [shapes, listenUndoKeys]);
+
+
 
 
     const handleStageClick = () => {
@@ -176,7 +230,10 @@ function App() {
             <div className="toolbar-wrapper">
                 <ToolPickerContainer tool={tool} setTool={setTool} stageRef={stageRef}
                                      setSelectedColor={setSelectedColor} setStrokeWidth={setStrokeWidth}
-                                     setShapes={() => setShapes(() => [])}/>
+                                     setShapes={() => {
+                                         setShapes(() => [])
+                                         localStorage.setItem('shapes', JSON.stringify(shapes));
+                                     }}/>
             </div>
 
             <Stage
@@ -203,6 +260,8 @@ function App() {
                                         {...shape}
                                         draggable={isDraggable}
                                         onClick={handleTransformation}
+                                        onDragEnd={handleDragEnd}
+                                        onTransformEnd={(evt) => handleTransformEnd(shape.id, evt)}
                                     />
                                 );
                             case 'circle':
@@ -212,6 +271,8 @@ function App() {
                                         {...shape}
                                         draggable={isDraggable}
                                         onClick={handleTransformation}
+                                        onDragEnd={handleDragEnd}
+                                        onTransformEnd={(evt) => handleTransformEnd(shape.id, evt)}
                                     />
                                 );
                             case 'triangle':
@@ -222,6 +283,8 @@ function App() {
                                         {...shape}
                                         draggable={isDraggable}
                                         onClick={handleTransformation}
+                                        onDragEnd={handleDragEnd}
+                                        onTransformEnd={(evt) => handleTransformEnd(shape.id, evt)}
                                     />
                                 )
                             case 'arrow':
@@ -231,6 +294,8 @@ function App() {
                                         {...shape}
                                         draggable={isDraggable}
                                         onClick={handleTransformation}
+                                        onDragEnd={handleDragEnd}
+                                        onTransformEnd={(evt) => handleTransformEnd(shape.id, evt)}
                                     />
                                 )
                             case 'pencil':
@@ -243,6 +308,8 @@ function App() {
                                         tension={0.3}
                                         draggable={isDraggable}
                                         onClick={handleTransformation}
+                                        onDragEnd={handleDragEnd}
+                                        onTransformEnd={(evt) => handleTransformEnd(shape.id, evt)}
                                     />
                                 )
                         }
@@ -250,7 +317,7 @@ function App() {
                     <Transformer ref={transformerRef}/>
                 </Layer>
             </Stage>
-            <ToastContainer />
+            <ToastContainer/>
 
         </div>
     )
